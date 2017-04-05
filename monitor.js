@@ -13,7 +13,7 @@
 
     // 使用onerror事件捕获页面中的错误
     window.onerror = function (_message, _url, _line, _column, _error) {
-        // 异步捕获
+
         setTimeout(function() {
             var _data = {
                 message: _message,  // 堆栈异常信息
@@ -29,12 +29,24 @@
                 _data.stack = (_error.stack || _error.stacktrace).toString();
             }
 
+            
             // 上报异常信息
             if (console_url) {
-                if (_data.stack) {
-                    $.post(console_url, _data);
+                if (location.host != 'ppt.51vv.com') {
+                    $.ajax({
+                        type : "get",
+                        async: false,
+                        url : console_url,
+                        data: _data,
+                        dataType : "jsonp",
+                        jsonp: "callback"
+                    });
                 } else {
-                    $.get(console_url, _data);
+                    if (_data.stack) {
+                        $.post(console_url, _data);
+                    } else {
+                        $.get(console_url, _data);
+                    }
                 }
             }
         }, 0);
