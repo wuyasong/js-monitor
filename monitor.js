@@ -13,6 +13,10 @@
 
     // 使用onerror事件捕获页面中的错误
     window.onerror = function (_message, _url, _line, _column, _error) {
+        //没有URL不上报！上报也不知道错误
+        if (_message != 'Script error.' && !_url){
+            return true;
+        }
 
         setTimeout(function() {
             var _data = {
